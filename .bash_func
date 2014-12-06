@@ -1,0 +1,324 @@
+############################################################
+# functions
+############################################################
+function swap()     # Swap 2 filenames around, if they exist
+{
+  local TMPFILE=tmp.$$
+
+  [ $# -ne 2 ] && echo "swap: 2 arguments needed" && return 1
+  [ ! -e $1 ] && echo "swap: $1 does not exist" && return 1
+  [ ! -e $2 ] && echo "swap: $2 does not exist" && return 1
+
+  mv "$1" $TMPFILE
+  mv "$2" "$1"
+  mv $TMPFILE "$2"
+}
+
+function lowercase()  # move filenames to lowercase
+{
+  for file ; do
+    filename=${file##*/}
+    case "$filename" in
+    */*) dirname==${file%/*} ;;
+    *) dirname=.;;
+    esac
+    nf=$(echo $filename | tr A-Z a-z)
+    newname="${dirname}/${nf}"
+    if [ "$nf" != "$filename" ]; then
+      mv "$file" "$newname"
+      echo "lowercase: $file --> $newname"
+    else
+      echo "lowercase: $file not changed."
+    fi
+  done
+}
+
+function fspaces()
+{
+  for file ; do
+    filename=${file##*/}
+    case "$filename" in
+    */*) dirname==${file%/*} ;;
+    *) dirname=.;;
+    esac
+    nf=$(echo $filename | sed -E 's/[[:space:]]+/_/g')
+    newname="${dirname}/${nf}"
+    if [ "$nf" != "$filename" ]; then
+      mv "$file" "$newname"
+      echo "fspaces: $file --> $newname"
+    else
+      echo "fspaces: $file not changed."
+    fi
+  done
+}
+
+function repeat()     # Repeat n times command
+{
+  local i max
+  max=$1; shift;
+  for ((i=1; i <= max ; i++)); do
+    eval "$@";
+  done
+}
+
+function extract()    # Handy Extract Program
+{
+   if [ -f $1 ] ; then
+     case $1 in
+       *.tar.bz2)   tar xvjf $1   ;;
+       *.tar.gz)  tar xvzf $1   ;;
+       *.bz2)     bunzip2 $1    ;;
+       *.rar)     unrar x $1    ;;
+       *.gz)    gunzip $1     ;;
+       *.tar)     tar xvf $1    ;;
+       *.tbz2)    tar xvjf $1   ;;
+       *.tgz)     tar xvzf $1   ;;
+       *.zip)     unzip $1    ;;
+       *.Z)     uncompress $1   ;;
+       *.7z)    7z x $1     ;;
+       *)       echo "'$1' cannot be extracted via >extract<" ;;
+     esac
+   else
+     echo "'$1' is not a valid file"
+   fi
+}
+
+function dirsize()
+{
+  du -shx * .[a-zA-Z0-9_]* 2> /dev/null | \
+  egrep '^ *[0-9.]*[MG]' | sort -n > /tmp/list
+  egrep '^ *[0-9.]*M' /tmp/list
+  egrep '^ *[0-9.]*G' /tmp/list
+  rm -f /tmp/list
+}
+
+function fe()   # Find a file with pattern $1 in name and Execute $2 on it
+{
+  # Check for proper number of command line args.
+  EXPECTED_ARGS=2
+
+  if [ $# -ne $EXPECTED_ARGS ]; then
+    echo "ERROR: invaild # of args: Usage: fe pattern cmd"
+  else
+    find . -type f -iname '*'$1'*' -exec "${2:-file}" {} \;  ;
+  fi
+}
+
+function apath()    # Temporarily add directories to PATH
+{
+  if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+    echo "Temporarily add to PATH"
+    echo "usage: apath [dir]"
+  else
+    PATH=$1:$PATH
+  fi
+}
+
+function my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,bsdtime,command ; }
+#function pp() { my_ps f | awk '!/awk/ && $0~var' var=${1:-".*"} ; }
+
+function killps()         # Kill by process name
+{
+  local pid pname sig="-TERM"   # Default signal
+  if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+    echo "Usage: killps [-SIGNAL] pattern"
+    return;
+  fi
+  if [ $# = 2 ]; then sig=$1 ; fi
+  for pid in $(my_ps| awk '!/awk/ && $0~pat { print $1 }' pat=${!#} ) ; do
+    pname=$(my_ps | awk '$1~var { print $5 }' var=$pid )
+    if ask "Kill process $pid <$pname> with signal $sig?"
+#      then kill -9 $sig $pid
+      then kill -9 $pid
+    fi
+  done
+}
+
+function ask()
+{
+  echo -n "${RED}$@" '[y/n] ' "${RESET}" ; read ans
+  case "$ans" in
+    y*|Y*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+function my_ip()    # Get IP address
+{
+  MY_IP=$(/sbin/ifconfig | awk '/inet/ { print $2 } ' | sed -e s/addr://)
+#  MY_ISP=$(/sbin/ifconfig | awk '/P-t-P/ { print $3 } ' | sed -e s/P-t-P://)
+}
+
+function hi()       # Get current host related info
+{
+  echo -e "\n${RED}You are logged on ${RED}$HOST"
+  echo -e "\nAdditionnal information:$NC " ; uname -a
+  echo -e "\n${RED}Current date :$NC " ; date
+  echo -e "\n${RED}Machine stats :$NC " ; uptime
+  echo -e "\n${RED}Memory stats :$NC " ; free
+  my_ip 2>&- ;
+  echo -e "\n${RED}Local IP Address :$NC" ; echo ${MY_IP:-"Not connected"}
+#  echo -e "\n${RED}ISP Address :$NC" ; echo ${MY_ISP:-"Not connected"}
+  echo -e "\n${YELLOW}Users logged on:$NC " ; w -h
+  echo "${RESET}"
+}
+
+function ni()       # network information
+{
+  echo "${RED}"
+    echo "--------------- Network Information ---------------"
+    /sbin/ifconfig | awk /'inet addr/ {print $2}'
+    /sbin/ifconfig | awk /'Bcast/ {print $3}'
+    /sbin/ifconfig | awk /'inet addr/ {print $4}'
+    /sbin/ifconfig | awk /'HWaddr/ {print $4,$5}'
+    echo "---------------------------------------------------"
+  echo -e "\n${RED}Open connections :$NC "; netstat -pan --inet;
+  echo "${RESET}"
+}
+
+function bash_stat()
+{
+  cut -f1 -d" " .bash_history | sort | uniq -c | sort -nr | head -n 10
+}
+
+alias hideme='history -d $((HISTCMD-1)) &&' $1
+
+function clock()
+{
+  while true; do
+  xit='null'
+  echo "${INVIS}"; read -s -t 1 -n 1 xit
+  if [ "$xit" == "q" ]; then
+    echo "Good-bye?!${RESET}"; sleep 1; clear; echo "${VIS}"
+    break
+  else
+    clear
+    timem=$(date +"%r" | awk /'/ {print $2}')
+    timet=$(date +"%r" | sed -E 's/(.{2})/\1 /g' | awk /'/ {print $1}')
+
+    if [ "$timem" == "AM" ]; then
+    if [ "$timet" == "12" ]; then echo "${BLACK}"
+    elif [ "$timet" == "01" ]; then echo "${BLACK}"
+    elif [ "$timet" == "02" ]; then echo "${BLACK}"
+    elif [ "$timet" == "03" ]; then echo "${BLUE}"
+    elif [ "$timet" == "04" ]; then echo "${BLUE}"
+    elif [ "$timet" == "05" ]; then echo "${BLUE}"
+    elif [ "$timet" == "06" ]; then echo "${RED}"
+    elif [ "$timet" == "07" ]; then echo "${RED}"
+    elif [ "$timet" == "08" ]; then echo "${YELLOW}"
+    elif [ "$timet" == "09" ]; then echo "${CYAN}"
+    elif [ "$timet" == "10" ]; then echo "${CYAN}"
+    elif [ "$timet" == "11" ]; then echo "${CYAN}"
+    fi
+    fi
+    if [ "$timem" == "PM" ]; then
+    if [ "$timet" == "12" ]; then echo "${CYAN}"
+    elif [ "$timet" == "01" ]; then echo "${CYAN}"
+    elif [ "$timet" == "02" ]; then echo "${CYAN}"
+    elif [ "$timet" == "03" ]; then echo "${CYAN}"
+    elif [ "$timet" == "04" ]; then echo "${CYAN}"
+    elif [ "$timet" == "05" ]; then echo "${YELLOW}"
+    elif [ "$timet" == "06" ]; then echo "${RED}"
+    elif [ "$timet" == "07" ]; then echo "${RED}"
+    elif [ "$timet" == "08" ]; then echo "${BLUE}"
+    elif [ "$timet" == "09" ]; then echo "${BLUE}"
+    elif [ "$timet" == "10" ]; then echo "${BLACK}"
+    elif [ "$timet" == "11" ]; then echo "${BLACK}"
+    fi
+    fi
+    echo "==================================="
+    echo "=========== $(date +"%r") ==========="
+    echo "==================================="
+  fi
+  done
+}
+
+function shot()     # Takes a screenshot of your size choice
+{
+  import -frame -strip -quality 75 "$HOME/$(date +%s).png"
+}
+
+# Creates an archive from given directory
+mktar() { tar cvf  "${1%%/}.tar"   "${1%%/}/"; }
+mktgz() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }
+mktbz() { tar cvjf "${1%%/}.tar.bz2" "${1%%/}/"; }
+
+function colortest()
+{
+  # set colors
+  echo "${BLACK} TEST test ${TXTBLD} TEST test ${RESET}"
+  echo "${RED} TEST test ${TXTBLD} TEST test ${RESET}"
+  echo "${GREEN} TEST test ${TXTBLD} TEST test ${RESET}"
+  echo "${YELLOW} TEST test ${TXTBLD} TEST test ${RESET}"
+  echo "${BLUE} TEST test ${TXTBLD} TEST test ${RESET}"
+  echo "${PURPLE} TEST test ${TXTBLD} TEST test ${RESET}"
+  echo "${CYAN} TEST test ${TXTBLD} TEST test ${RESET}"
+  echo "${WHITE} TEST test ${TXTBLD} TEST test ${RESET}"
+}
+
+function trans()
+{
+  awk '
+  {
+  for (i=1; i<=NF; i++)  {
+    a[NR,i] = $i
+  }
+  }
+  NF>p { p = NF }
+  END {
+  for(j=1; j<=p; j++) {
+    str=a[1,j]
+    for(i=2; i<=NR; i++){
+    str=str" "a[i,j];
+    }
+    print str
+  }
+  }' $1
+}
+
+function add()
+{
+  awk '{total = total + $1}END{print total}' $1
+}
+
+function spl() {
+  mysql -e 'show processlist' | egrep $1
+}
+
+# A simple script which will name a tab in iTerm
+function nametab () {
+  echo -ne "\033]0;"$@"\007"
+}
+
+google() {
+    search=""
+    echo "Googling: $@"
+    for term in $@; do
+        search="$search%20$term"
+    done
+    open "http://www.google.com/search?q=$search"
+}
+
+gc() {
+  # git add .
+  git commit -m "$*"
+}
+
+function last_two_dirs {
+pwd |rev| awk -F / '{print $1,$2}' | rev | sed s_\ _/_
+}
+
+function spy()
+{
+  usage="\nspy <server>\n"
+  
+  if [ $# -lt 1 ] || [ "$1" = "-h" ] ; then
+    echo -e "$usage"
+    return
+  fi
+
+  server="$1"
+
+  ssh -t $server "watch 'mysqladmin processlist | grep -v Sleep'"
+}
+
