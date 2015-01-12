@@ -42,7 +42,7 @@ if [[ -n "$PS1" ]]; then
 
   use_color=false
 
-  source  $HOME/git/contrib/completion/git-prompt.sh
+  source  $HOME/.git-prompt.sh
 
   # Customize BASH PS1 prompt to show current GIT repository and branch
   Color_Off="\[\033[0m\]"       # Text Reset
@@ -209,26 +209,12 @@ if [ -f ~/.bash_func ]; then
 fi
 
 export PATH=/usr/local/mysql/bin:$PATH
-export PATH=/opt/pose/implementation/bin:$PATH
-export SSH_TUNNEL_REMOTE_PORT=ssh://svn.va.opower.it/opt/svnroot/infrastructure/trunk
-export MYSQL_PASSWORD=df
-export workspace=/opt/pose
 export PATH="./bin:$PATH"
 export PATH=/usr/local/mysql/bin:$PATH
 export stuff=$HOME/Documents/stuff/
 export work=$HOME/Documents/work/
-export ws=/opt/pose
-export crypto_dir=$ws/crypto
-export puppet_dir=$ws/puppet
-export POSE_USER="elena.washington"
-export CHEF_DATA=/opt/pose/data
-export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
 
 alias ipmitool=/usr/local/bin/ipmitool
-
-# gotta have both my prompt && opower.bash
-export NO_SVN_PROMPT=1
-source $HOME/opower.bash
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 
