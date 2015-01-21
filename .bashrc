@@ -42,7 +42,9 @@ if [[ -n "$PS1" ]]; then
 
   use_color=false
 
-  source  $HOME/.git-prompt.sh
+  if echo $HOSTNAME | grep -qi "elena"; then
+    source  $HOME/.git-prompt.sh
+  fi
 
   # Customize BASH PS1 prompt to show current GIT repository and branch
   Color_Off="\[\033[0m\]"       # Text Reset
@@ -173,7 +175,7 @@ if [[ -n "$PS1" ]]; then
     HostInfoWColor="$ICyan$UserName$IBlue@$ICyan$HostName"
   elif echo $HOSTNAME | grep -q "^..st.*$"; then
     HostInfoWColor="$IYellow$UserName$ICyan@$IYellow$HostName"
-  elif echo $HOSTNAME | grep -q "^..pr.*$"; then
+  elif echo $HOSTNAME | grep -q "^db[1|2]"; then
     HostInfoWColor="$IRed$UserName$ICyan@$IRed$HostName"
   elif echo $HOSTNAME | grep -q "home\|local"; then
     HostInfoWColor="$RED\t$GREEN (╯°□°)╯︵ ┻━┻  $IBlue\$(last_two_dirs) $IWhite ➡ "

@@ -10,23 +10,15 @@ if [ -f "$HOME/.bashrc" ]; then
   . "$HOME/.bashrc"
 fi
 
-# Get opower remote profile
-if [ -f "$HOME/.bash_opwr_rmt" ]; then
-  . "$HOME/.bash_opwr_rmt"
-fi
-
-# if running locally use local profile
-if [ -f "$HOME/.bash_opwr_home" ]; then
-  . "$HOME/.bash_opwr_home"
-fi
-
 # add home bin
 if [ -d "$HOME/bin" ] ; then
   PATH=$PATH:$HOME/bin
 fi
 
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
+if echo $HOSTNAME | grep -qi "elena"; then
+  if [ -f $(brew --prefix)/etc/bash_completion ]; then
   . $(brew --prefix)/etc/bash_completion
+  fi
 fi
 
 export PATH
