@@ -62,7 +62,7 @@
 	ls = log --graph --pretty=format:%C(bold)%C(yellow)%h%C(bold)%Cred%d\\ %Creset%s%C(bold)%C(cyan)\\ [%cn] --decorate
   hide = update-index --assume-unchanged
   unhide = update-index --no-assume-unchanged
-  static = ls-files -v|grep '^h'|cut -c3-
+  lsf = "!git ls-files -v|grep '^h'|cut -c3-"
 	
 [push]
   # limit no arg push behavior to just the current branch
