@@ -53,7 +53,7 @@
   lc  = "!f() { git ll "$1"^.."$1"; }; f"
   diffr  = "!f() { git diff "$1"^.."$1"; }; f"
   # show aliases
-  list-alias = "!git config -l | grep alias | cut -c 7-"
+  alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
   # show last tag
   lasttag = describe --tags --abbrev=0
 	undo = reset --soft HEAD^
@@ -62,7 +62,7 @@
 	ls = log --graph --pretty=format:%C(bold)%C(yellow)%h%C(bold)%Cred%d\\ %Creset%s%C(bold)%C(cyan)\\ [%cn] --decorate
   hide = update-index --assume-unchanged
   unhide = update-index --no-assume-unchanged
-	alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
+	
 [push]
   # limit no arg push behavior to just the current branch
   default = tracking
