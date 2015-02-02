@@ -60,6 +60,8 @@
 	showfiles = show --pretty=\"format:\" --name-only
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	ls = log --graph --pretty=format:%C(bold)%C(yellow)%h%C(bold)%Cred%d\\ %Creset%s%C(bold)%C(cyan)\\ [%cn] --decorate
+  hide = update-index --assume-unchanged
+  unhide = update-index --no-assume-unchanged
 	alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
 [push]
   # limit no arg push behavior to just the current branch
