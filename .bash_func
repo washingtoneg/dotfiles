@@ -233,6 +233,27 @@ function clock()
   done
 }
 
+function timer()
+{
+  seconds=0
+  minutes=0
+  hours=0
+  while true; do
+    xit='null'
+    echo "${INVIS}"; read -s -t 1 -n 1 xit
+
+    clear
+    echo "${RED}"
+
+    echo "==================================="
+    echo "========== $(printf '%02d' ${hours}) : $(printf '%02d' ${minutes}) : $(printf '%02d' ${seconds}) ==========="
+    echo "==================================="
+    seconds=$((seconds + 1))
+    if [ "$minutes" -eq "59" ] && [ "$seconds" -eq "60" ]; then hours=$((hours + 1)) && minutes=0  && seconds=0; fi
+    if [ "$seconds" -eq "60" ]; then minutes=$((minutes + 1)) && seconds=0; fi
+  done
+}
+
 function shot()     # Takes a screenshot of your size choice
 {
   import -frame -strip -quality 75 "$HOME/$(date +%s).png"
