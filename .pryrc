@@ -6,13 +6,13 @@ $LOAD_PATH.push(*Dir["#{ENV['HOME']}/.prygems/gems/*/lib"]).uniq!
 
 PLUGINS = %w[
   pry-doc
-  pry-git
-  pry-remote
+  pry-byebug
   awesome_print
   readline
 ]
-# pry-byebug
+# pry-remote
 # pry-stack_explorer
+# pry-git
 
 PLUGINS.each do |name|
   begin

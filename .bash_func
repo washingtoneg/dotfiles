@@ -1,6 +1,7 @@
 ############################################################
 # functions
 ############################################################
+
 function swap()     # Swap 2 filenames around, if they exist
 {
   local TMPFILE=tmp.$$
@@ -277,6 +278,13 @@ function colortest()
   echo "${WHITE} TEST test ${TXTBLD} TEST test ${RESET}"
 }
 
+function color256()
+{
+  for i in {0..255} ; do
+    printf "\x1b[38;5;${i}mcolour${i}\n"
+  done
+}
+
 function trans()
 {
   awk '
@@ -332,7 +340,7 @@ pwd |rev| awk -F / '{print $1,$2}' | rev | sed s_\ _/_
 function spy()
 {
   usage="\nspy <server>\n"
-  
+
   if [ $# -lt 1 ] || [ "$1" = "-h" ] ; then
     echo -e "$usage"
     return
@@ -343,3 +351,21 @@ function spy()
   ssh -t $server "watch 'mysqladmin processlist | grep -v Sleep'"
 }
 
+function how_to_ln {
+  echo "ln -s /path/to/file /path/to/symlink"
+  echo "more info at http://stackoverflow.com/questions/1951742/how-to-symlink-a-file-in-linux"
+}
+
+
+export MANPATH=/Users/elenawashington/scratch/ansible/docs/man
+make_manpath() {
+DIRS='
+/usr/local/share/man
+/usr/share/man
+/usr/local/MacGPG2/share/man
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/share/man
+/Applications/Xcode.app/Contents/Developer/usr/share/man
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/share/man
+~/scratch/ansible/docs/man'
+export MANPATH=$(echo $DIRS | tr ' ' ':')
+}

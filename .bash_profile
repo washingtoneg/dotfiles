@@ -6,9 +6,10 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # Get the aliases and functions
-if [ -f "$HOME/.bashrc" ]; then
+# if [ -f "$HOME/.bashrc" ]; then
   . "$HOME/.bashrc"
-fi
+  . "$HOME/.bash_aliases"
+# fi
 
 # add home bin
 if [ -d "$HOME/bin" ] ; then
@@ -21,6 +22,11 @@ if echo $HOSTNAME | grep -qi "elena"; then
   fi
 fi
 
+if [ -f ~/.git-completion.bash ]; then
+  . ~/.git-completion.bash
+fi
+
 export PATH
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+eval $(thefuck --alias)
