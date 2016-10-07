@@ -1,6 +1,7 @@
 ############################################################
 # .bashrc
 ############################################################
+
 # If not running interactively, don't do anything
 if [[ -n "$PS1" ]]; then
   # append to the history file, don't overwrite it
@@ -40,11 +41,18 @@ if [[ -n "$PS1" ]]; then
   VIS=$(tput cnorm)
   RESET=$(tput sgr0)
 
-  use_color=false
+  #use_color=false
 
-  if echo $HOSTNAME | grep -qi "elena"; then
+  if echo $HOSTNAME | grep -qi "elena\|ec2.internal"; then
     source  $HOME/.git-prompt.sh
+  else
+    curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o ~/.git-prompt.sh && source ~/.git-prompt.sh
   fi
+
+  export CLICOLOR=1
+  #export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
+  export LSCOLORS=gx
+  alias ls='ls -F'
 
   # Customize BASH PS1 prompt to show current GIT repository and branch
   Color_Off="\[\033[0m\]"       # Text Reset
@@ -98,6 +106,7 @@ if [[ -n "$PS1" ]]; then
   IPurple="\[\033[0;95m\]"      # Purple
   ICyan="\[\033[0;96m\]"        # Cyan
   IWhite="\[\033[0;97m\]"       # White
+  IORANGE="\\033[38;5;166m"     # Orange
 
   # Bold High Intensty
   BIBlack="\[\033[1;90m\]"      # Black
@@ -166,24 +175,41 @@ if [[ -n "$PS1" ]]; then
       GitInfoColor=""
     fi
 
-    export PS1="$HostInfoWColor $IYellow$PathFull $SvnInfoColor$GitInfoColor$NewLine$ $Color_Off"
+    export PS1="$(printf "%*s\r%s\$ " "$(tput cols)" "$(aws_profile_color)" "$HostInfoWColor $IYellow$PathFull $SvnInfoColor$GitInfoColor") $NewLine$ $Color_Off"
   }
 
+  aws_profile_color() {
+    if [[ -n $AWS_PROFILE ]]; then
+      if [[ $AWS_PROFILE == 'support' ]]; then
+        echo "$IGreen$AWS_PROFILE"
+      elif [[ $AWS_PROFILE == 'prod!!!' ]]; then
+        echo "$RED$AWS_PROFILE         "
+      elif [[ $AWS_PROFILE == 'personal' ]]; then
+        echo "$YELLOW$AWS_PROFILE         "
+      fi
+    fi
+  }
+
+
   if echo $HOSTNAME | grep -q "^..im.*$"; then
-    HostInfoWColor="$ICyan$UserName$IBlue@$ICyan$HostName";
+    HostInfoWColor="$ICyan$UserName$IBlue@$ICyan$$IBlue\$(last_two_dirs) HostName";
   elif echo $HOSTNAME | grep -q "^..oq.*$"; then
     HostInfoWColor="$ICyan$UserName$IBlue@$ICyan$HostName"
   elif echo $HOSTNAME | grep -q "^..st.*$"; then
     HostInfoWColor="$IYellow$UserName$ICyan@$IYellow$HostName"
   elif echo $HOSTNAME | grep -q "^db[1|2]"; then
     HostInfoWColor="$IRed$UserName$ICyan@$IRed$HostName"
-  elif echo $HOSTNAME | grep -q "home\|local"; then
-    HostInfoWColor="$RED\t$GREEN (╯°□°)╯︵ ┻━┻  $IBlue\$(last_two_dirs) $IWhite ➡ "
+  elif echo $HOSTNAME | grep -q "home\|local\|^ip\|ec2.internal"; then
+    HostInfoWColor="$RED\t$GREEN (╯°□°)╯︵ ┻━┻  $IWhite ➡ "
   else
     HostInfoWColor="$IWhite$UserName$IBlue@$IWhite$HostName"
   fi
 
   export PROMPT_COMMAND=soho_pwd
+
+  if [[ $PWD == '/Users/elenawashington' ]]; then
+	  fortune
+  fi
 fi
 
 export EDITOR=vim
@@ -210,16 +236,46 @@ if [ -f ~/.bash_func ]; then
     . ~/.bash_func
 fi
 
+# get work specific functions
+if [ -f ~/.bash_greenhouse_specific ]; then
+    . ~/.bash_greenhouse_specific
+fi
+
+# get secrets
+if [ -f ~/.bash_secrets ]; then
+    . ~/.bash_secrets
+fi
+
 export PATH=/usr/local/mysql/bin:$PATH
 export PATH="./bin:$PATH"
 export PATH=/usr/local/mysql/bin:$PATH
-export stuff=$HOME/Documents/stuff/
-export work=$HOME/Documents/work/
-
-alias ipmitool=/usr/local/bin/ipmitool
-alias lso="ls -alG | awk '{k=0;for(i=0;i<=8;i++)k+=((substr(\$1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(\" %0o \",k);print}'"
-
+export PATH=/usr/local/terraform/bin:$PATH
+export GOPATH=$HOME/Documents/work/go
+export GOBIN=$GOPATH/bin
+export PATH=$GOPATH/bin:$PATH
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+export HOMEYPATH=~/scratch/homey/
+export downloads="cd ~/Downloads"
+export scratch=$HOME/Documents/scratch
+export stuff=$HOME/Documents/stuff
+export work=$HOME/Documents/work
 
-### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
+# RubyMotion
+export RUBYMOTION_ANDROID_SDK=/Users/elenawashington/.rubymotion-android/sdk
+export RUBYMOTION_ANDROID_NDK=/Users/elenawashington/.rubymotion-android/ndk
+
+make_manpath
+
+export_git_prompt () {
+  if [ -f "$(brew --prefix bash-git-prompt)/share/gitprompt.sh" ]; then
+    GIT_PROMPT_THEME=Default
+    source "$(brew --prefix bash-git-prompt)/share/gitprompt.sh"
+  fi
+}
+export_git_prompt
+
+# gitprompt configuration
+# Set config variables first
+GIT_PROMPT_ONLY_IN_REPO=1
+
+eval $(thefuck --alias)
