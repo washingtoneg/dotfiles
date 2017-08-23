@@ -356,6 +356,34 @@ function how_to_ln {
   echo "more info at http://stackoverflow.com/questions/1951742/how-to-symlink-a-file-in-linux"
 }
 
+function kitten() {
+  for i in $@; do echo; echo $'\e[33;1m'$i$'\e[0m'; cat $i; done
+}
+
+k8s_node_of_first_pod() {
+  kubectl get po -o wide | grep "$1" | head -n1 | awk '{print $NF}'
+}
+
+hostname() {
+  echo "$1" | egrep '(\d+[\.-]){3}(\d+)'
+}
+
+cadvisor() {
+  local hostname local_port
+
+  if hostname $1; then
+    hostname="$1"
+  else
+    hostname="$(k8s_node_of_first_pod "$1")"
+  fi
+
+  local_port="${2-4194}"
+
+  echo "tunnelling to $hostname"
+  echo "cadvisor is available locally on port $local_port"
+
+  ssh -NL "${local_port}":localhost:4194 "$hostname"
+}
 
 export MANPATH=/Users/elenawashington/scratch/ansible/docs/man
 make_manpath() {

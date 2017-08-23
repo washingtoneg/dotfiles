@@ -21,6 +21,9 @@ if [[ -n "$PS1" ]]; then
   # no empty command completion
   shopt -s no_empty_cmd_completion
 
+  # enable command completion
+  complete -C '/usr/local/bin/aws_completer' aws
+
   # check the window size after each command and, if necessary,
   # update the values of LINES and COLUMNS.
   shopt -s checkwinsize
@@ -175,18 +178,33 @@ if [[ -n "$PS1" ]]; then
       GitInfoColor=""
     fi
 
-    export PS1="$(printf "%*s\r%s\$ " "$(tput cols)" "$(aws_profile_color)" "$HostInfoWColor $IYellow$PathFull $SvnInfoColor$GitInfoColor") $NewLine$ $Color_Off"
+    export PS1="$(printf "%*s\r%s\$ " "$(tput cols)" "$(profile_info)" "$HostInfoWColor $IYellow$PathFull $SvnInfoColor$GitInfoColor") $NewLine$ $Color_Off"
   }
 
-  aws_profile_color() {
+  profile_info() {
+    local string
+
     if [[ -n $AWS_PROFILE ]]; then
-      if [[ $AWS_PROFILE == 'support' ]]; then
-        echo "$IGreen$AWS_PROFILE"
-      elif [[ $AWS_PROFILE == 'prod!!!' ]]; then
-        echo "$RED$AWS_PROFILE         "
+      if [[ $AWS_PROFILE == 'support-mfa' ]]; then
+        text=$(echo -e "\xf0\x9f\x90\x82\x20 \xf0\x9f\x92\x88\x20 support \xf0\x9f\x90\x82\x20 \xf0\x9f\x92\x88\x20")
+        echo "$IGreen$text"
+      elif [[ $AWS_PROFILE == 'grnhse-admin' ]]; then
+        text=$(echo -e "\xf0\x9f\x9a\x92\x20 \xf0\x9f\x94\xa5\x20 prod!!! \xf0\x9f\x94\xa5\x20 \xf0\x9f\x9a\x92\x20")
+        echo "$RED$text"
       elif [[ $AWS_PROFILE == 'personal' ]]; then
         echo "$YELLOW$AWS_PROFILE         "
       fi
+    else
+      L1='G'; C1="$RED"
+      L2='A'; C2="$ORANGE"
+      L3='Y'; C3="$YELLOW"
+      L4='P'; C4="$GREEN"
+      L5='R'; C5="$BLUE"
+      L6='I'; C6="$PURPLE"
+      L7='D'; C7="$WHITE"
+      L8='E'; C8="$RED"
+
+      echo -e "\xf0\x9f\x8c\x88\x20 \xf0\x9f\x99\x8f\x20 $C1$L1 $C2$L2 $C3$L3 $C4$L4 $C5$L5 $C6$L6 $C7$L7 $C8$L8 \xf0\x9f\x99\x8f\x20 \xf0\x9f\x8c\x88\x20"
     fi
   }
 
@@ -246,6 +264,8 @@ if [ -f ~/.bash_secrets ]; then
     . ~/.bash_secrets
 fi
 
+eval "$(rbenv init -)"
+
 export PATH=/usr/local/mysql/bin:$PATH
 export PATH="./bin:$PATH"
 export PATH=/usr/local/mysql/bin:$PATH
@@ -253,7 +273,6 @@ export PATH=/usr/local/terraform/bin:$PATH
 export GOPATH=$HOME/Documents/work/go
 export GOBIN=$GOPATH/bin
 export PATH=$GOPATH/bin:$PATH
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 export HOMEYPATH=~/scratch/homey/
 export downloads="cd ~/Downloads"
 export scratch=$HOME/Documents/scratch
@@ -279,3 +298,12 @@ export_git_prompt
 GIT_PROMPT_ONLY_IN_REPO=1
 
 eval $(thefuck --alias)
+
+# added by travis gem
+[ -f /Users/elenawashington/.travis/travis.sh ] && source /Users/elenawashington/.travis/travis.sh
+
+# openssl schenanigans
+export LDFLAGS=-L/usr/local/opt/openssl/lib
+export CPPFLAGS=-I/usr/local/opt/openssl/include
+export PKG_CONFIG_PATH=/usr/local/opt/openssl/lib/pkgconfig
+export PATH="/usr/local/opt/openssl/bin:$PATH"
