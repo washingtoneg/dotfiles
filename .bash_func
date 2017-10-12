@@ -333,6 +333,10 @@ gc() {
   git commit -m "$*"
 }
 
+gcb() {
+  git checkout -b "$*"
+}
+
 function last_two_dirs {
 pwd |rev| awk -F / '{print $1,$2}' | rev | sed s_\ _/_
 }
@@ -383,6 +387,60 @@ cadvisor() {
   echo "cadvisor is available locally on port $local_port"
 
   ssh -NL "${local_port}":localhost:4194 "$hostname"
+}
+
+airport_code_lookup() {
+  local input
+
+  input="$1"
+  airport=$(echo "$input" | tr /a-z/ /A-Z/)
+  curl -s https://raw.githubusercontent.com/jbrooksuk/JSON-Airports/master/airports.json \
+    | jq ".[] | select(.iata == \"$airport\")"
+}
+
+volume() {
+  local adjustment current_volume new_volume
+
+  adjustment="$1"
+  current_volume=$(osascript -e 'output volume of (get volume settings)')
+
+  case "$adjustment" in
+    +)
+      new_volume=$(($current_volume + 10))
+      set_volume "$new_volume"
+      ;;
+    -)
+      new_volume=$(($current_volume - 10))
+      set_volume "$new_volume"
+      ;;
+    [0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|7[0-9]|8[0-9]|9[0-9])
+      set_volume "$adjustment"
+      ;;
+    max)
+      set_volume '100'
+      ;;
+    min)
+      set_volume '0'
+      ;;
+    mute)
+      # Check to see if volume is already muted
+      if [[ $(echo $(osascript -e 'output muted of (get volume settings)')) == 'true' ]]; then
+        osascript -e 'set volume output muted false'
+        echo "${GREEN}Volume unmuted${RESET}"
+      else
+        osascript -e 'set volume output muted true'
+        echo "${GREEN}Volume muted${RESET}"
+      fi
+      ;;
+  esac
+}
+
+set_volume() {
+  local volume
+
+  volume="$1"
+  osascript -e "set volume output volume $volume"
+  echo "${GREEN}Volume set to $volume${RESET}"
 }
 
 export MANPATH=/Users/elenawashington/scratch/ansible/docs/man
