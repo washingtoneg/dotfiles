@@ -160,10 +160,10 @@ for i in range(tabpagenr('$'))
     " set the tab page number (for mouse clicks)
     "let s .= '%' . (i + 1) . 'T'
     " display tabnumber (for use with <count>gt, etc)
-    let s .= ' '. (i+1) . ' ' 
+    let s .= ' '. (i+1) . ' '
 
     " the label is made by MyTabLabel()
-		let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
+    let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
 
     if i+1 < tabpagenr('$')
         let s .= ' |'
