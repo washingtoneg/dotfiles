@@ -46,11 +46,10 @@ if [[ -n "$PS1" ]]; then
 
   #use_color=false
 
-  if echo $HOSTNAME | grep -qi "elena\|ec2.internal"; then
-    source  $HOME/.git-prompt.sh
-  else
-    curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o ~/.git-prompt.sh && source ~/.git-prompt.sh
-  fi
+   if [ -f "/usr/local/opt/bash-git-prompt/share/gitprompt.sh" ]; then
+     __GIT_PROMPT_DIR="/usr/local/opt/bash-git-prompt/share"
+     source "/usr/local/opt/bash-git-prompt/share/gitprompt.sh"
+   fi
 
   export CLICOLOR=1
   #export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
@@ -162,10 +161,11 @@ if [[ -n "$PS1" ]]; then
       SvnInfoColor=""
     fi
 
+
     # git info
     git branch >/dev/null 2>&1
     if [ $? -eq 0 ]; then
-      GitBranch=`__git_ps1 "%s"`
+      #GitBranch=`__git_ps1 "%s"`
       git status | grep "nothing to commit" >/dev/null 2>&1
       if [ $? -eq 0 ]; then
         # Clean repository - nothing to commit
@@ -177,6 +177,7 @@ if [[ -n "$PS1" ]]; then
     else
       GitInfoColor=""
     fi
+
 
     export PS1="$(printf "%*s\r%s\$ " "$(tput cols)" "$(profile_info)" "$HostInfoWColor $IYellow$PathFull $SvnInfoColor$GitInfoColor") $NewLine$ $Color_Off"
   }
@@ -204,7 +205,7 @@ if [[ -n "$PS1" ]]; then
       L7='D'; C7="$WHITE"
       L8='E'; C8="$RED"
 
-      echo -e "\xf0\x9f\x8c\x88\x20 \xf0\x9f\x99\x8f\x20 $C1$L1 $C2$L2 $C3$L3 $C4$L4 $C5$L5 $C6$L6 $C7$L7 $C8$L8 \xf0\x9f\x99\x8f\x20 \xf0\x9f\x8c\x88\x20"
+      # echo -e "\xf0\x9f\x8c\x88\x20 \xf0\x9f\x99\x8f\x20 $C1$L1 $C2$L2 $C3$L3 $C4$L4 $C5$L5 $C6$L6 $C7$L7 $C8$L8 \xf0\x9f\x99\x8f\x20 \xf0\x9f\x8c\x88\x20"
     fi
   }
 
@@ -226,7 +227,7 @@ if [[ -n "$PS1" ]]; then
   export PROMPT_COMMAND=soho_pwd
 
   if [[ $PWD == '/Users/elenawashington' ]]; then
-	  fortune
+    fortune
   fi
 fi
 
@@ -249,15 +250,21 @@ if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+fi
+
 # get bash functions
 if [ -f ~/.bash_func ]; then
     . ~/.bash_func
 fi
 
 # get work specific functions
-if [ -f ~/.bash_greenhouse_specific ]; then
-    . ~/.bash_greenhouse_specific
+if [ -f ~/.bash_nsone_specific ]; then
+    . ~/.bash_nsone_specific
 fi
+source ~/.dev_local_setup/.env
+eval "$(/Users/elenawashington/work/util/dev-local-setup/dev_local_setup init -)"
 
 # get secrets
 if [ -f ~/.bash_secrets ]; then
@@ -270,14 +277,14 @@ export PATH=/usr/local/mysql/bin:$PATH
 export PATH="./bin:$PATH"
 export PATH=/usr/local/mysql/bin:$PATH
 export PATH=/usr/local/terraform/bin:$PATH
-export GOPATH=$HOME/Documents/work/go
+export GOPATH=$HOME/work/go
 export GOBIN=$GOPATH/bin
 export PATH=$GOPATH/bin:$PATH
 export HOMEYPATH=~/scratch/homey/
 export downloads="cd ~/Downloads"
-export scratch=$HOME/Documents/scratch
+export scratch=$HOME/scratch
 export stuff=$HOME/Documents/stuff
-export work=$HOME/Documents/work
+export work=$HOME/work
 
 # RubyMotion
 export RUBYMOTION_ANDROID_SDK=/Users/elenawashington/.rubymotion-android/sdk
