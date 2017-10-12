@@ -416,6 +416,9 @@ volume() {
     [0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]|7[0-9]|8[0-9]|9[0-9])
       set_volume "$adjustment"
       ;;
+    current)
+      print_volume "$current_volume"
+      ;;
     max)
       set_volume '100'
       ;;
@@ -440,7 +443,14 @@ set_volume() {
 
   volume="$1"
   osascript -e "set volume output volume $volume"
-  echo "${GREEN}Volume set to $volume${RESET}"
+  print_volume "$volume"
+}
+
+print_volume() {
+  local level
+
+  level="$1"
+  echo "${GREEN}Volume set to $level${RESET}"
 }
 
 export MANPATH=/Users/elenawashington/scratch/ansible/docs/man
