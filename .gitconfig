@@ -56,21 +56,22 @@
   alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
   # show last tag
   lasttag = describe --tags --abbrev=0
-	undo = reset --soft HEAD^
-	showfiles = show --pretty=\"format:\" --name-only
-	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-	ls = log --graph --pretty=format:%C(bold)%C(yellow)%h%C(bold)%Cred%d\\ %Creset%s%C(bold)%C(cyan)\\ [%cn] --decorate
+  undo = reset --soft HEAD^
+  showfiles = show --pretty=\"format:\" --name-only
+  lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  ls = log --graph --pretty=format:%C(bold)%C(yellow)%h%C(bold)%Cred%d\\ %Creset%s%C(bold)%C(cyan)\\ [%cn] --decorate
   hide = update-index --assume-unchanged
   unhide = update-index --no-assume-unchanged
   lsf = "!git ls-files -v|grep '^h'|cut -c3-"
-	
+
 [push]
   # limit no arg push behavior to just the current branch
   default = tracking
 [user]
-	name = elena 
-	email = elena@email.com
+  name = elena
+  email = elena@email.com
 [core]
-	editor = subl -w -n
+  editor = vim
+  # editor = subl -w -n
 [log]
-	decorate = short
+  decorate = short
