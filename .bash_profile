@@ -5,11 +5,19 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
+# Source private definitions
+if [ -L "$HOME/.bash_private" ]; then
+  . "$HOME/.bash_private"
+fi
+
 # Get the aliases and functions
-# if [ -f "$HOME/.bashrc" ]; then
+if [ -L "$HOME/.bashrc" ]; then
   . "$HOME/.bashrc"
+fi
+
+if [ -L "$HOME/.bash_aliases" ]; then
   . "$HOME/.bash_aliases"
-# fi
+fi
 
 # add home bin
 if [ -d "$HOME/bin" ] ; then
@@ -24,6 +32,10 @@ fi
 
 if [ -f ~/.git-completion.bash ]; then
   . ~/.git-completion.bash
+fi
+
+if [ -f "$scratch/vboxmanage-bash-completion/VBoxManage" ]; then
+  . "$scratch/vboxmanage-bash-completion/VBoxManage"
 fi
 
 export PATH
