@@ -260,11 +260,9 @@ if [ -f ~/.bash_func ]; then
 fi
 
 # get work specific functions
-if [ -f ~/.bash_nsone_specific ]; then
-    . ~/.bash_nsone_specific
+if [ -f ~/.bash_work_specific ]; then
+    . ~/.bash_work_specific
 fi
-source ~/.dev_local_setup/.env
-eval "$(/Users/elenawashington/work/util/dev-local-setup/dev_local_setup init -)"
 
 # get secrets
 if [ -f ~/.bash_secrets ]; then
@@ -314,3 +312,10 @@ export LDFLAGS=-L/usr/local/opt/openssl/lib
 export CPPFLAGS=-I/usr/local/opt/openssl/include
 export PKG_CONFIG_PATH=/usr/local/opt/openssl/lib/pkgconfig
 export PATH="/usr/local/opt/openssl/bin:$PATH"
+
+openssl_1_1() {
+  export LDFLAGS=-L/usr/local/opt/openssl@1.1/lib
+  export CPPFLAGS=-I/usr/local/opt/openssl@1.1/include
+  export PKG_CONFIG_PATH=/usr/local/opt/openssl@1.1/lib/pkgconfig
+  export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
+}
