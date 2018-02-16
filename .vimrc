@@ -124,6 +124,9 @@ set nocursorline
 """"""""""""""
 
 set clipboard=unnamed
+nmap <C-x> :!pbcopy<CR>
+nmap <C-c> :w !pbcopy<CR><CR>
+nmap <C-v> :set paste<CR>:r !pbpaste<CR>:set nopaste<CR>
 
 """"""""""""""
 " whitespace "
@@ -141,20 +144,25 @@ set list listchars=tab:»·,trail:·,nbsp:·
 """"""""""""""
 
 fu! MyTabLabel(n)
-let buflist = tabpagebuflist(a:n)
-let winnr = tabpagewinnr(a:n)
-let string = fnamemodify(bufname(buflist[winnr - 1]), ':t')
-return empty(string) ? '[unnamed]' : string
+  let buflist = tabpagebuflist(a:n)
+  let winnr = tabpagewinnr(a:n)
+  let string = fnamemodify(bufname(buflist[winnr - 1]), ':t')
+  if exists("g:mytablabels")
+    if exists("g:mytablabels[a:n]") && g:mytablabels[a:n] !=? ''
+      let string .= ' (' . g:mytablabels[a:n] . ')'
+    endif
+  endif
+
+  return empty(string) ? '[unnamed]' : string
 endfu
 
 fu! MyTabLine()
-let s = ''
-for i in range(tabpagenr('$'))
-" select the highlighting
+  let s = ''
+  for i in range(tabpagenr('$'))
     if i + 1 == tabpagenr()
-    let s .= '%#TabLineSel#%m'
+      let s .= '%#TabLineSel#%m'
     else
-    let s .= '%#TabLine#'
+      let s .= '%#TabLine#'
     endif
 
     " set the tab page number (for mouse clicks)
@@ -168,10 +176,21 @@ for i in range(tabpagenr('$'))
     if i+1 < tabpagenr('$')
         let s .= ' |'
     endif
-endfor
-return s
+  endfor
+  return s
 endfu
 set tabline=%!MyTabLine()
+
+" Add the ability to rename tabs
+fu! AddTabNameToList(name)
+  if !exists("g:mytablabels")
+    let g:mytablabels = { tabpagenr(): a:name }
+  else
+    let g:mytablabels[tabpagenr()] = a:name
+  endif
+endfu
+
+command! -nargs=* Renametab call AddTabNameToList('<args>')
 
 """""""""""""""""
 " CtrlP support "
@@ -217,3 +236,25 @@ let g:ctrlp_map = '<c-p>'
 "      .git .hg .svn .bzr _darcs
 "  w - modifier to "r": start search from the cwd instead of the current file's
 "      directory
+
+" Make netrw work for me
+let g:netrw_banner = 0
+let g:netrw_browse_split = 3
+let g:netrw_cursorline = 0
+let g:netrw_liststyle = 3
+let g:netrw_winsize = 20
+
+
+" open file vertically to the right
+augroup netrw_mappings
+    autocmd!
+    autocmd filetype netrw call Netrw_mappings()
+augroup END
+function! OpenToRight()
+  :rightbelow vnew
+  :wincmd p
+  :normal P
+endfunction
+function! Netrw_mappings()
+    noremap V :call OpenToRight()<cr>
+endfunction
