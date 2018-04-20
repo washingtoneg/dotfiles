@@ -258,3 +258,13 @@ endfunction
 function! Netrw_mappings()
     noremap V :call OpenToRight()<cr>
 endfunction
+
+" Command mode helpers
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+cnoremap <C-p> <Up>
+cnoremap <C-n> <Down>
+cnoremap <C-b> <Left>
+cnoremap <C-f> <Right>
+cnoremap <M-b> <S-Left>
+cnoremap <M-f> <S-Right>
