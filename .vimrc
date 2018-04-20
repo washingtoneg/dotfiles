@@ -1,5 +1,4 @@
 " This is Elena Washington's .vimrc file
-" Yes, it's skimp. I'm just now coming to the darkside. Thanks for the cookies ;)
 
 set nocompatible              " be iMproved, required
 filetype off                  " required
@@ -191,51 +190,6 @@ fu! AddTabNameToList(name)
 endfu
 
 command! -nargs=* Renametab call AddTabNameToList('<args>')
-
-"""""""""""""""""
-" CtrlP support "
-"""""""""""""""""
-set runtimepath^=~/.vim/bundle/ctrlp.vim
-
-" Use this option to change the mapping to invoke CtrlP in |Normal| mode: >
-let g:ctrlp_map = '<c-p>'
-
-
-" Set the default opening command to use when pressing the above mapping: >
- let g:ctrlp_cmd = 'CtrlP'
-
-
-" Set this to 1 to set searching by filename (as opposed to full path) as the
-" default: >
-  let g:ctrlp_by_filename = 0
-
-
-" Set this to 1 to set regexp search as the default: >
-  let g:ctrlp_regexp = 0
-" Can be toggled on/off by pressing <c-r> inside the prompt.
-
-
-" Where to put the new tab page when opening one: >
-  let g:ctrlp_tabpage_position = 'ac'
-"<
-"  a - after.
-"  b - before.
-"  c - the current tab page.
-"  l - the last tab page.
-"  f - the first tab page.
-
-
-" When starting up, CtrlP sets its local working directory according to this
-"variable: >
-  let g:ctrlp_working_path_mode = 'ra'
-"<
-"  c - the directory of the current file.
-"  a - the directory of the current file, unless it is a subdirectory of the cwd
-"  r - the nearest ancestor of the current file that contains one of these
-"      directories or files:
-"      .git .hg .svn .bzr _darcs
-"  w - modifier to "r": start search from the cwd instead of the current file's
-"      directory
 
 " Make netrw work for me
 let g:netrw_banner = 0
