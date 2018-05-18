@@ -83,16 +83,6 @@ try
 catch
 endtry
 
-" Start NERDtree automatically when vim starts up
-" autocmd vimenter * NERDTree
-set nocp
-execute pathogen#infect()
-if exists("loaded_nerd_tree")
-    autocmd VimEnter * NERDTree
-endif
-map <C-n> :NERDTreeToggle<CR>
-let NERDTreeShowHidden=1
-
 " RSpec.vim mappings
 map <Leader>f :call RunCurrentSpecFile()<CR>
 map <Leader>s :call RunNearestSpec()<CR>
