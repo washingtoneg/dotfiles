@@ -2,6 +2,8 @@
 # .bashrc
 ############################################################
 
+LANG=C
+
 # If not running interactively, don't do anything
 if [[ -n "$PS1" ]]; then
   # append to the history file, don't overwrite it
@@ -230,36 +232,42 @@ export EDITOR=vim
 
 export hsr="$HOME/.homesick/repos/"
 
-# get bash aliases defs
+# get private definitions
+if [ -f ~/.bash_private ]; then
+    echo 'sourcing ~/.bash_private'
+    . ~/.bash_private
+fi
+
+# get work specific definitions
+if [ -f ~/.bash_work_specific ]; then
+    echo 'sourcing ~/.bash_work_specific'
+    . ~/.bash_work_specific
+fi
+
+# get bash aliases
 if [ -f ~/.bash_aliases ]; then
+    echo 'sourcing ~/.bash_aliases'
     . ~/.bash_aliases
+fi
+
+# get bash functions
+if [ -f ~/.bash_func ]; then
+    echo 'sourcing ~/.bash_func'
+    . ~/.bash_func
 fi
 
 # enable bash completion in interactive shells
 if [ -f /etc/bash_completion ]; then
+    echo 'sourcing /etc/bash_completion'
     . /etc/bash_completion
 fi
 
 command -v brew > /dev/null
 if [[ $? == 0 ]]; then
+  echo "sourcing $(brew --prefix)/etc/bash_completion"
   if [ -f $(brew --prefix)/etc/bash_completion ]; then
     . $(brew --prefix)/etc/bash_completion
   fi
-fi
-
-# get bash functions
-if [ -f ~/.bash_func ]; then
-    . ~/.bash_func
-fi
-
-# get work specific functions
-if [ -f ~/.bash_work_specific ]; then
-    . ~/.bash_work_specific
-fi
-
-# get secrets
-if [ -f ~/.bash_secrets ]; then
-    . ~/.bash_secrets
 fi
 
 # RubyMotion
