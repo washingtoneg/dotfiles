@@ -235,11 +235,6 @@ export EDITOR=vim
 
 export hsr="$HOME/.homesick/repos/"
 
-# make caps lock actually useful
-if command -v xmodmap >/dev/null 2>&1; then
-  xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
-fi
-
 # get bash aliases defs
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
@@ -250,8 +245,11 @@ if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
+command -v brew > /dev/null
+if [[ $? == 0 ]]; then
+  if [ -f $(brew --prefix)/etc/bash_completion ]; then
+    . $(brew --prefix)/etc/bash_completion
+  fi
 fi
 
 # get bash functions
@@ -269,21 +267,6 @@ if [ -f ~/.bash_secrets ]; then
     . ~/.bash_secrets
 fi
 
-eval "$(rbenv init -)"
-
-export PATH=/usr/local/mysql/bin:$PATH
-export PATH="./bin:$PATH"
-export PATH=/usr/local/mysql/bin:$PATH
-export PATH=/usr/local/terraform/bin:$PATH
-export GOPATH=$HOME/work/go
-export GOBIN=$GOPATH/bin
-export PATH=$GOPATH/bin:$PATH
-export HOMEYPATH=~/scratch/homey/
-export downloads="cd ~/Downloads"
-export scratch=$HOME/scratch
-export stuff=$HOME/Documents/stuff
-export work=$HOME/work
-
 # RubyMotion
 export RUBYMOTION_ANDROID_SDK=/Users/elenawashington/.rubymotion-android/sdk
 export RUBYMOTION_ANDROID_NDK=/Users/elenawashington/.rubymotion-android/ndk
@@ -291,9 +274,12 @@ export RUBYMOTION_ANDROID_NDK=/Users/elenawashington/.rubymotion-android/ndk
 make_manpath
 
 export_git_prompt () {
-  if [ -f "$(brew --prefix bash-git-prompt)/share/gitprompt.sh" ]; then
-    GIT_PROMPT_THEME=Default
-    source "$(brew --prefix bash-git-prompt)/share/gitprompt.sh"
+  command -v brew > /dev/null
+  if [[ $? == 0 ]]; then
+    if [ -f "$(brew --prefix bash-git-prompt)/share/gitprompt.sh" ]; then
+      GIT_PROMPT_THEME=Default
+      source "$(brew --prefix bash-git-prompt)/share/gitprompt.sh"
+    fi
   fi
 }
 export_git_prompt
@@ -302,10 +288,8 @@ export_git_prompt
 # Set config variables first
 GIT_PROMPT_ONLY_IN_REPO=1
 
-eval $(thefuck --alias)
-
 # added by travis gem
-[ -f /Users/elenawashington/.travis/travis.sh ] && source /Users/elenawashington/.travis/travis.sh
+[ -f "$HOME/.travis/travis.sh" ] && source "$HOME/.travis/travis.sh"
 
 # openssl schenanigans
 export LDFLAGS=-L/usr/local/opt/openssl/lib
@@ -319,3 +303,17 @@ openssl_1_1() {
   export PKG_CONFIG_PATH=/usr/local/opt/openssl@1.1/lib/pkgconfig
   export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
 }
+
+export PATH=/usr/local/mysql/bin:$PATH
+export PATH="./bin:$PATH"
+export PATH=/usr/local/mysql/bin:$PATH
+export PATH=/usr/local/terraform/bin:$PATH
+export GOPATH=$HOME/work/go
+export GOBIN=$GOPATH/bin
+export PATH=$GOPATH/bin:$PATH
+export HOMEYPATH=~/scratch/homey/
+export downloads="cd ~/Downloads"
+export scratch=$HOME/scratch
+export stuff=$HOME/Documents/stuff
+export work=$HOME/work
+export PATH=/usr/local/opt/python/libexec/bin:$PATH
