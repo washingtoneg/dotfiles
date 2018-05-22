@@ -18,12 +18,13 @@ if [ -f "$HOME/.bash_work_specific" ]; then
   . "$HOME/.bash_work_specific"
 fi
 
-# Get the aliases and functions
+# Get aliases
 if [ -f "$HOME/.bash_aliases" ]; then
   echo 'sourcing .bash_aliases'
   . "$HOME/.bash_aliases"
 fi
 
+# Get functions
 if [ -f "$HOME/.bash_func" ]; then
   echo 'sourcing .bash_func'
   . "$HOME/.bash_func"
