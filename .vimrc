@@ -3,6 +3,10 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
+" Set encoding
+set encoding=utf-8
+scriptencoding utf-8
+
 " Autoreload ~/.vimrc
 augroup reload_vimrc " {
 autocmd!
