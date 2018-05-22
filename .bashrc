@@ -46,11 +46,6 @@ if [[ -n "$PS1" ]]; then
 
   #use_color=false
 
-   if [ -f "/usr/local/opt/bash-git-prompt/share/gitprompt.sh" ]; then
-     __GIT_PROMPT_DIR="/usr/local/opt/bash-git-prompt/share"
-     source "/usr/local/opt/bash-git-prompt/share/gitprompt.sh"
-   fi
-
   export CLICOLOR=1
   #export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
   export LSCOLORS=gx
@@ -277,6 +272,7 @@ export_git_prompt () {
   command -v brew > /dev/null
   if [[ $? == 0 ]]; then
     if [ -f "$(brew --prefix bash-git-prompt)/share/gitprompt.sh" ]; then
+      echo "sourcing $(brew --prefix bash-git-prompt)/share/gitprompt.sh"
       GIT_PROMPT_THEME=Default
       source "$(brew --prefix bash-git-prompt)/share/gitprompt.sh"
     fi
