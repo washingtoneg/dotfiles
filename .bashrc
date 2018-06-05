@@ -51,7 +51,7 @@ if [[ -n "$PS1" ]]; then
   export CLICOLOR=1
   #export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
   export LSCOLORS=gx
-  alias ls='ls -F'
+  alias ls='/bin/ls -F'
 
   # Customize BASH PS1 prompt to show current GIT repository and branch
   Color_Off="\[\033[0m\]"       # Text Reset
