@@ -96,9 +96,6 @@ map <Leader>a :call RunAllSpecs()<CR>
 " Expand tab
 set et
 
-" No cursorline
-set nocursorline
-
 """"""""""""""
 " copy/pasta "
 """"""""""""""
@@ -175,7 +172,7 @@ command! -nargs=* Renametab call AddTabNameToList('<args>')
 " Make netrw work for me
 let g:netrw_banner = 0
 let g:netrw_browse_split = 3
-let g:netrw_cursorline = 0
+let g:netrw_cursor = 0
 let g:netrw_liststyle = 3
 let g:netrw_winsize = 20
 
