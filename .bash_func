@@ -465,6 +465,10 @@ git_url() {
   curl -is https://git.io -F "url=$url"
 }
 
+tmux_layout() {
+  tmux list-windows | sed -n 's/.*layout \(.*\)] @.*/\1/p'
+}
+
 export MANPATH=/Users/elenawashington/scratch/ansible/docs/man
 make_manpath() {
 DIRS='
