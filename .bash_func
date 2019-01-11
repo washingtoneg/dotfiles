@@ -469,6 +469,12 @@ tmux_layout() {
   tmux list-windows | sed -n 's/.*layout \(.*\)] @.*/\1/p'
 }
 
+math() {
+  local input=$@
+  #$(($input)) 2>&1 | awk '{gsub(/:/,""); print $2}'
+  ruby -e "puts $input"
+}
+
 export MANPATH=/Users/elenawashington/scratch/ansible/docs/man
 make_manpath() {
 DIRS='
