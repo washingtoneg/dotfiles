@@ -312,12 +312,16 @@ export PATH=/usr/local/mysql/bin:$PATH
 export PATH="./bin:$PATH"
 export PATH=/usr/local/mysql/bin:$PATH
 export PATH=/usr/local/terraform/bin:$PATH
-export GOPATH=$HOME/work/go
-export GOBIN=$GOPATH/bin
-export PATH=$GOPATH/bin:$PATH
 export HOMEYPATH=~/scratch/homey/
 export downloads="cd ~/Downloads"
 export scratch=$HOME/scratch
 export stuff=$HOME/Documents/stuff
 export work=$HOME/work
+export GOPATH=$scratch/go
+export GOBIN=$GOPATH/bin
+export PATH=$GOPATH/bin:$PATH
 export PATH=/usr/local/opt/python/libexec/bin:$PATH
+export PATH="$HOME/.rbenv/bin:$PATH"
+
+eval "$(jira --completion-script-bash)"
+eval "$(rbenv init -)"
