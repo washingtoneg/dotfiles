@@ -24,6 +24,9 @@
   co = checkout
   br = branch
   rso = remote show origin
+  # push
+  pf = 'push -f'
+  pushup = !sh -c 'git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)'
   # diffs
   df = diff
   dw = diff --word-diff
@@ -63,13 +66,15 @@
   hide = update-index --assume-unchanged
   unhide = update-index --no-assume-unchanged
   lsf = "!git ls-files -v|grep '^h'|cut -c3-"
+  # rebase magic
+  ri = "!f() { git rebase -i HEAD~$1; }; f"
 
 [push]
   # limit no arg push behavior to just the current branch
   default = tracking
 [user]
   name = elena
-  email = elena@email.com
+  email = elena@example.com
 [core]
   editor = vim
   # editor = subl -w -n
