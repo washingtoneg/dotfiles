@@ -1,2 +1,2 @@
-# Ctrl + j prepends command with `time`
-"\C-j": "\C-atime \C-m"
+# Ctrl + t prepends command with `time`
+"\C-t": "\C-atime \C-m"
