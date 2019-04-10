@@ -40,6 +40,9 @@ set directory=~/.tmp,/var/tmp,/tmp
 " Don't record
 map q <Nop>
 
+" Insert visual block mode
+nnoremap q <c-v>
+
 " End of line alias
 map ' $<esc>
 
