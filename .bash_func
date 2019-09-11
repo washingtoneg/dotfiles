@@ -475,7 +475,7 @@ math() {
   ruby -e "puts $input"
 }
 
-export MANPATH=/Users/elenawashington/scratch/ansible/docs/man
+export MANPATH="/Users/$(whoami)/man:/usr/local/share/man:/usr/share/man"
 make_manpath() {
 DIRS='
 /usr/local/share/man
