@@ -323,5 +323,6 @@ export PATH=$GOPATH/bin:$PATH
 export PATH=/usr/local/opt/python/libexec/bin:$PATH
 export PATH="$HOME/.rbenv/bin:$PATH"
 
-eval "$(jira --completion-script-bash)"
+#eval "$(jira --completion-script-bash)"
 eval "$(rbenv init -)"
+eval "$(ssh-agent -s)"
