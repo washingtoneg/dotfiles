@@ -33,3 +33,5 @@ alias rakeit="rake db:drop && rake db:create && rake db:migrate && rake db:seed"
 alias downloads='cd /Users/${USER}/Downloads && open .'
 alias workmode="spotify play uri spotify:user:$SPOTIFY_USERNAME:playlist:$WORK_PLAYLIST_URI && caffeinate -t 2700 &"
 alias lock='if ! [[ $(spotify status | grep paused) ]]; then spotify pause; fi && open -a ScreenSaverEngine.app'
+alias save_n_clear_term='tput smcup'
+alias restore_term='tput rmcup'
