@@ -35,3 +35,4 @@ alias workmode="spotify play uri spotify:user:$SPOTIFY_USERNAME:playlist:$WORK_P
 alias lock='if ! [[ $(spotify status | grep paused) ]]; then spotify pause; fi && open -a ScreenSaverEngine.app'
 alias save_n_clear_term='tput smcup'
 alias restore_term='tput rmcup'
+alias tfup="terraform init && terraform plan"
