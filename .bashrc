@@ -229,6 +229,12 @@ if [[ -n "$PS1" ]]; then
 fi
 
 export EDITOR=vim
+# Don't hardcode SHELL - let the system set it based on chsh
+# export SHELL=/bin/bash
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
+# Add Homebrew to PATH first (for Apple Silicon Macs)
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 
 export hsr="$HOME/.homesick/repos/"
 
