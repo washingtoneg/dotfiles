@@ -262,6 +262,12 @@ if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
+# enable fuzzy find in interactive shells
+if [ -f /usr/share/fzf/key-bindings.bash ]; then
+    echo 'sourcing /usr/share/fzf/key-bindings.bash'
+    . /usr/share/fzf/key-bindings.bash
+fi
+
 command -v brew > /dev/null
 if [[ $? == 0 ]]; then
   echo "sourcing $(brew --prefix)/etc/bash_completion"
@@ -320,7 +326,15 @@ export work=$HOME/work
 export GOPATH=$scratch/go
 export GOBIN=$GOPATH/bin
 export PATH=$GOPATH/bin:$PATH
-export PATH=/usr/local/opt/python/libexec/bin:$PATH
+
+# Python user packages - dynamically detect version
+if command -v python3 &>/dev/null; then
+  PYTHON_VERSION=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")' 2>/dev/null)
+  if [[ -n "$PYTHON_VERSION" ]]; then
+    export PATH="$HOME/Library/Python/${PYTHON_VERSION}/bin:$PATH"
+  fi
+fi
+
 export PATH="$HOME/.rbenv/bin:$PATH"
 
 #eval "$(jira --completion-script-bash)"
